@@ -28,9 +28,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- The version of calcite should be consistent with the one used by Flink -->
     <calcite.version>1.16.0</calcite.version>
-    <flink.version>1.5.0</flink.version>
-    <flink.shaded.version>1.5.0</flink.shaded.version>
-    <hadoop.version>2.7.4</hadoop.version>
+    <flink.version>1.10.1</flink.version>
+    <flink.shaded.hadoop.version>2.7.5-10.0</flink.shaded.hadoop.version>
+    <hadoop.version>2.7.5</hadoop.version>
     <jackson.version>1.9.13</jackson.version>
     <jackson2.version>2.7.4</jackson2.version>
     <jersey.version>1.19.4</jersey.version>
@@ -276,7 +276,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.flink</groupId>
-        <artifactId>flink-metrics-jmx</artifactId>
+        <artifactId>flink-metrics-jmx_${scala.binary.version}</artifactId>
         <version>${flink.version}</version>
       </dependency>
       <dependency>
@@ -304,8 +304,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.flink</groupId>
-        <artifactId>flink-shaded-hadoop2</artifactId>
-        <version>${flink.shaded.version}</version>
+        <artifactId>flink-shaded-hadoop-2-uber</artifactId>
+        <version>${flink.shaded.hadoop.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.thoughtworks.paranamer</groupId>
@@ -333,7 +333,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.flink</groupId>
-        <artifactId>flink-table_${scala.binary.version}</artifactId>
+        <artifactId>flink-table-uber_${scala.binary.version}</artifactId>
         <version>${flink.version}</version>
       </dependency>
       <dependency>

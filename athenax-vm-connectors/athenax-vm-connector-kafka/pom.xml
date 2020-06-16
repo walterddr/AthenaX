@@ -48,7 +48,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-metrics-jmx</artifactId>
+      <artifactId>flink-metrics-jmx_${scala.binary.version}</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

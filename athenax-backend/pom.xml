@@ -41,7 +41,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.flink</groupId>
-          <artifactId>flink-shaded-hadoop2</artifactId>
+          <artifactId>flink-shaded-hadoop-2-uber</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -63,7 +63,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.flink</groupId>
-          <artifactId>flink-shaded-hadoop2</artifactId>
+          <artifactId>flink-shaded-hadoop-2-uber</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -79,7 +79,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.flink</groupId>
-          <artifactId>flink-shaded-hadoop2</artifactId>
+          <artifactId>flink-shaded-hadoop-2-uber</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
