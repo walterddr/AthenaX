@@ -48,7 +48,7 @@ public class ProcessExecutorTest {
     JobDescriptor job = new JobDescriptor(
         Collections.singletonMap("input", input),
         Collections.emptyMap(),
-        output,
+        Collections.singletonMap("output", output),
         1,
         "SELECT * FROM input.foo");
     CompilationResult res = JobCompiler.compileJob(job);
@@ -69,7 +69,7 @@ public class ProcessExecutorTest {
     JobDescriptor job = new JobDescriptor(
         Collections.singletonMap("input", input),
         Collections.emptyMap(),
-        output,
+        Collections.singletonMap("output", output),
         1,
         "SELECT * FROM input.foo");
     CompilationResult res = new ContainedExecutor().run(job);
@@ -89,7 +89,7 @@ public class ProcessExecutorTest {
     JobDescriptor job = new JobDescriptor(
         Collections.singletonMap("input", input),
         Collections.emptyMap(),
-        output,
+        Collections.singletonMap("output", output),
         1,
         "SELECT2 * FROM input.foo");
     CompilationResult res = new ContainedExecutor().run(job);

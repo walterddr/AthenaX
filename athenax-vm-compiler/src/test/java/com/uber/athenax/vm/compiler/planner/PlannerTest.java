@@ -27,15 +27,6 @@ import static org.junit.Assert.assertEquals;
 public class PlannerTest {
 
   @Test
-  public void testCreateFunction() throws Exception {
-    String sql = "CREATE FUNCTION foo AS 'com.uber.foo';";
-    Planner.parse(sql);
-
-    sql = "CREATE FUNCTION foo AS 'com.uber.foo' USING JAR 'mock://foo', JAR 'mock://bar';";
-    Planner.parse(sql);
-  }
-
-  @Test
   public void testSetOption() throws Exception {
     String sql = "SET flink.enable.checkpoint=1;";
     Planner.parse(sql);

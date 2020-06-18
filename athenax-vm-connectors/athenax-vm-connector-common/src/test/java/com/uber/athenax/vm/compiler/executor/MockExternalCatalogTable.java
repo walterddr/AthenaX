@@ -20,9 +20,11 @@ package com.uber.athenax.vm.compiler.executor;
 
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.table.api.TableSchema;
-import org.apache.flink.table.catalog.ExternalCatalogTable;
+import org.apache.flink.table.catalog.CatalogTable;
+import org.apache.flink.table.catalog.ConnectorCatalogTable;
 import org.apache.flink.table.descriptors.ConnectorDescriptor;
 import org.apache.flink.table.descriptors.DescriptorProperties;
+import org.apache.flink.table.sources.TableSource;
 import org.apache.flink.types.Row;
 import scala.Option;
 
@@ -31,7 +33,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * External Catalog Table based on mock data and mock schema.
@@ -41,25 +45,23 @@ public class MockExternalCatalogTable implements Serializable {
   static final String TABLE_DATA_CONNECTOR_PROPERTY = "table.data";
   static final String CONNECTOR_TYPE = "mock";
   static final int CONNECTOR_VERSION = 1;
+  static final MockTableSourceFactory tableSourceFactory = new MockTableSourceFactory();
 
-  private final RowTypeInfo schema;
+  private final RowTypeInfo typeInfo;
   private final List<Row> data;
 
-  public MockExternalCatalogTable(RowTypeInfo schema, List<Row> data) {
-    this.schema = schema;
+  public MockExternalCatalogTable(RowTypeInfo typeInfo, List<Row> data) {
+    this.typeInfo = typeInfo;
     this.data = data;
   }
 
-  ExternalCatalogTable toExternalCatalogTable() {
-    TableSchema tableSchema = new TableSchema(schema.getFieldNames(), schema.getFieldTypes());
-    ConnectorDescriptor descriptor = new ConnectorDescriptor(CONNECTOR_TYPE, CONNECTOR_VERSION, false) {
-      @Override
-      public void addConnectorProperties(DescriptorProperties properties) {
-        properties.putTableSchema(TABLE_SCHEMA_CONNECTOR_PROPERTY, tableSchema);
-        properties.putString(TABLE_DATA_CONNECTOR_PROPERTY, serializeRows());
-      }
-    };
-    return new ExternalCatalogTable(descriptor, Option.empty(), Option.empty(), Option.empty(), Option.empty());
+  CatalogTable toExternalCatalogTable() {
+    TableSchema tableSchema = new TableSchema(typeInfo.getFieldNames(), typeInfo.getFieldTypes());
+    DescriptorProperties params = new DescriptorProperties(true);
+    params.putTableSchema(TABLE_SCHEMA_CONNECTOR_PROPERTY, tableSchema);
+    params.putString(TABLE_DATA_CONNECTOR_PROPERTY, serializeRows());
+    TableSource<Row> tableSource = tableSourceFactory.createTableSource(params.asMap());
+    return ConnectorCatalogTable.source(tableSource, false);
   }
 
   private String serializeRows() {

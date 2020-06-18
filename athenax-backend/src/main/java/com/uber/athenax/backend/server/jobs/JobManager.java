@@ -25,7 +25,7 @@ import com.uber.athenax.backend.server.InstanceStateUpdateListener;
 import com.uber.athenax.backend.server.ServerContext;
 import com.uber.athenax.backend.server.yarn.InstanceInfo;
 import com.uber.athenax.vm.api.tables.AthenaXTableCatalog;
-import com.uber.athenax.vm.api.tables.AthenaXTableCatalogProvider;
+import com.uber.athenax.vm.api.tables.AthenaXTableCatalogFactory;
 import com.uber.athenax.vm.compiler.planner.JobCompilationResult;
 import com.uber.athenax.vm.compiler.planner.Planner;
 import org.slf4j.Logger;
@@ -41,9 +41,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JobManager implements InstanceStateUpdateListener {
   private static final Logger LOG = LoggerFactory.getLogger(JobManager.class);
   private final JobStore jobStore;
-  private final AthenaXTableCatalogProvider catalogProvider;
+  private final AthenaXTableCatalogFactory catalogProvider;
 
-  public JobManager(JobStore jobStore, AthenaXTableCatalogProvider catalogProvider) {
+  public JobManager(JobStore jobStore, AthenaXTableCatalogFactory catalogProvider) {
     this.jobStore = jobStore;
     this.catalogProvider = catalogProvider;
   }

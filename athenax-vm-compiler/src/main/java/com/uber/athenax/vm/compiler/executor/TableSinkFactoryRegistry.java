@@ -18,35 +18,34 @@
 
 package com.uber.athenax.vm.compiler.executor;
 
-import com.uber.athenax.vm.api.tables.AthenaXTableSinkProvider;
-import org.apache.flink.table.catalog.ExternalCatalogTable;
+import org.apache.flink.table.catalog.CatalogTable;
 import org.apache.flink.table.descriptors.ConnectorDescriptorValidator;
 import org.apache.flink.table.descriptors.DescriptorProperties;
+import org.apache.flink.table.factories.TableSinkFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-@SuppressWarnings("deprecated")
-final class TableSinkProviderRegistry {
-  private static final Map<String, AthenaXTableSinkProvider> PROVIDERS;
+final class TableSinkFactoryRegistry {
+  private static final Map<String, TableSinkFactory> PROVIDERS;
 
   static {
-    HashMap<String, AthenaXTableSinkProvider> providers = new HashMap<>();
-    ServiceLoader<AthenaXTableSinkProvider> loaders =
-        ServiceLoader.load(AthenaXTableSinkProvider.class);
-    loaders.forEach(x -> providers.put(x.getType(), x));
+    HashMap<String, TableSinkFactory> providers = new HashMap<>();
+    ServiceLoader<TableSinkFactory> loaders =
+        ServiceLoader.load(TableSinkFactory.class);
+    loaders.forEach(x -> providers.put(x.getClass().getCanonicalName(), x));
     PROVIDERS = Collections.unmodifiableMap(providers);
   }
 
-  private TableSinkProviderRegistry() {
+  private TableSinkFactoryRegistry() {
   }
 
-  static AthenaXTableSinkProvider getProvider(ExternalCatalogTable table) {
+  static TableSinkFactory getProvider(CatalogTable table) {
     DescriptorProperties properties = new DescriptorProperties(true);
-    table.addProperties(properties);
-    String connectorType = properties.getString(ConnectorDescriptorValidator.CONNECTOR_TYPE());
+    properties.putProperties(table.getProperties());
+    String connectorType = properties.getString(ConnectorDescriptorValidator.CONNECTOR_TYPE);
     return PROVIDERS.get(connectorType);
   }
 }

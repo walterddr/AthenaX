@@ -22,10 +22,10 @@ import com.uber.athenax.vm.api.tables.AthenaXTableCatalog;
 import com.uber.athenax.vm.compiler.executor.CompilationResult;
 import com.uber.athenax.vm.compiler.executor.ContainedExecutor;
 import com.uber.athenax.vm.compiler.executor.JobDescriptor;
-import com.uber.athenax.vm.compiler.parser.impl.ParseException;
-import com.uber.athenax.vm.compiler.parser.impl.SqlParserImpl;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.parser.impl.ParseException;
+import org.apache.calcite.sql.parser.impl.SqlParserImpl;
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.hadoop.fs.Path;
 
@@ -37,9 +37,9 @@ public class Planner {
   private static final int DEFAULT_IDENTIFIER_MAX_LENGTH = 128;
 
   private final Map<String, AthenaXTableCatalog> inputs;
-  private final AthenaXTableCatalog outputs;
+  private final Map<String, AthenaXTableCatalog> outputs;
 
-  public Planner(Map<String, AthenaXTableCatalog> inputs, AthenaXTableCatalog outputs) {
+  public Planner(Map<String, AthenaXTableCatalog> inputs, Map<String, AthenaXTableCatalog> outputs) {
     this.inputs = inputs;
     this.outputs = outputs;
   }
@@ -76,7 +76,7 @@ public class Planner {
       impl.setQuotedCasing(Lex.JAVA.quotedCasing);
       impl.setUnquotedCasing(Lex.JAVA.unquotedCasing);
       impl.setIdentifierMaxLength(DEFAULT_IDENTIFIER_MAX_LENGTH);
-      return impl.SqlStmtsEof();
+      return impl.SqlStmtList();
     }
   }
 }

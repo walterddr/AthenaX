@@ -18,13 +18,15 @@
 
 package com.uber.athenax.vm.api.tables;
 
+import org.apache.flink.table.factories.CatalogFactory;
+
 import java.util.List;
 import java.util.Map;
 
 /**
  * AthenaXTableCatalogProvider provides the catalogs for all clusters.
  */
-public interface AthenaXTableCatalogProvider {
+public interface AthenaXTableCatalogFactory extends CatalogFactory {
   /**
    * Return the catalogs for input tables for a specific cluster.
    *

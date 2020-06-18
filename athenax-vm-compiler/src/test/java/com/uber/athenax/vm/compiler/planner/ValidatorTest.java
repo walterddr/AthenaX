@@ -19,15 +19,13 @@
 package com.uber.athenax.vm.compiler.planner;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.uber.athenax.vm.compiler.parser.impl.ParseException;
 import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.parser.impl.ParseException;
 import org.apache.commons.configuration.Configuration;
 
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -78,22 +76,5 @@ public class ValidatorTest {
     SqlNodeList nodes = Planner.parse(sql);
     Validator validator = new Validator();
     validator.extract(nodes);
-  }
-
-  @Test
-  public void testCreateFunction() throws IOException, ParseException {
-    String sql = Joiner.on(";\n").join(
-        "CREATE FUNCTION udf AS 'foo.udf'",
-        "CREATE FUNCTION udf1 AS 'foo.udf' USING JAR 'mock://foo'",
-        "CREATE FUNCTION udf2 AS 'foo.udf' USING JAR 'mock://foo', JAR 'mock://bar'"
-    );
-    SqlNodeList nodes = Planner.parse(sql);
-    Validator validator = new Validator();
-    validator.extract(nodes);
-    assertEquals(ImmutableList.of(
-        URI.create("mock://foo"),
-        URI.create("mock://foo"),
-        URI.create("mock://bar")
-    ), ImmutableList.copyOf(validator.additionalResources()));
   }
 }

@@ -21,8 +21,9 @@ package com.uber.athenax.vm.compiler.executor;
 import com.uber.athenax.vm.api.tables.AthenaXTableCatalog;
 import org.apache.flink.table.api.CatalogNotExistException;
 import org.apache.flink.table.api.TableNotExistException;
-import org.apache.flink.table.catalog.ExternalCatalog;
-import org.apache.flink.table.catalog.ExternalCatalogTable;
+import org.apache.flink.table.catalog.Catalog;
+import org.apache.flink.table.catalog.CatalogTable;
+import org.apache.flink.table.catalog.GenericInMemoryCatalog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,18 +31,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class SingleLevelMemoryCatalog implements AthenaXTableCatalog, Serializable {
+public class SingleLevelMemoryCatalog extends GenericInMemoryCatalog implements AthenaXTableCatalog, Serializable {
   private static final long serialVersionUID = -1L;
   private final String database;
   private final Map<String, MockExternalCatalogTable> tables;
 
   public SingleLevelMemoryCatalog(String database, Map<String, MockExternalCatalogTable> tables) {
+    super(database);
     this.database = database;
     this.tables = tables;
   }
 
   @Override
-  public ExternalCatalogTable getTable(String tableName) throws TableNotExistException {
+  public CatalogTable getTable(String tableName) throws TableNotExistException {
     MockExternalCatalogTable table = tables.get(tableName);
     if (table == null) {
       throw new TableNotExistException(database, "Table " + tableName + " does not exist");
@@ -55,7 +57,7 @@ public class SingleLevelMemoryCatalog implements AthenaXTableCatalog, Serializab
   }
 
   @Override
-  public ExternalCatalog getSubCatalog(String dbName) throws CatalogNotExistException {
+  public Catalog getSubCatalog(String dbName) throws CatalogNotExistException {
     throw new CatalogNotExistException(dbName);
   }
 

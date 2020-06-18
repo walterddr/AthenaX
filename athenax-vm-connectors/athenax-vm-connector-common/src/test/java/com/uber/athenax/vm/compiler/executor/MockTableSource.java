@@ -18,8 +18,6 @@
 
 package com.uber.athenax.vm.compiler.executor;
 
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableSchema;
@@ -30,23 +28,16 @@ import java.util.List;
 
 class MockTableSource implements StreamTableSource<Row> {
   private final List<Row> data;
-  private final RowTypeInfo type;
   private final TableSchema schema;
 
-  MockTableSource(List<Row> data, RowTypeInfo type) {
+  MockTableSource(List<Row> data, TableSchema schema) {
     this.data = data;
-    this.type = type;
-    this.schema = new TableSchema(type.getFieldNames(), type.getFieldTypes());
+    this.schema = schema;
   }
 
   @Override
   public DataStream<Row> getDataStream(StreamExecutionEnvironment execEnv) {
     return execEnv.fromCollection(data);
-  }
-
-  @Override
-  public TypeInformation<Row> getReturnType() {
-    return type;
   }
 
   @Override

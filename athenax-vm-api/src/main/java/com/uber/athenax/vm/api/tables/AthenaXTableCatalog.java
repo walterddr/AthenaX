@@ -18,9 +18,13 @@
 
 package com.uber.athenax.vm.api.tables;
 
-import org.apache.flink.table.catalog.ExternalCatalog;
+import org.apache.flink.table.api.CatalogNotExistException;
+import org.apache.flink.table.api.TableNotExistException;
+import org.apache.flink.table.catalog.Catalog;
+import org.apache.flink.table.catalog.CatalogTable;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A catalog that describes the mappings between SQL tables to data sources.
@@ -28,5 +32,13 @@ import java.io.Serializable;
  * <p>AthenaXTableCatalog needs to inherit from {@link Serializable} as the
  * actual compilation might happen remotely.</p>
  */
-public interface AthenaXTableCatalog extends ExternalCatalog, Serializable {
+public interface AthenaXTableCatalog extends Catalog, Serializable {
+
+  CatalogTable getTable(String tableName) throws TableNotExistException;
+
+  List<String> listTables();
+
+  Catalog getSubCatalog(String dbName) throws CatalogNotExistException;
+
+  List<String> listSubCatalogs();
 }

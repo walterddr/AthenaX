@@ -27,7 +27,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- The version of calcite should be consistent with the one used by Flink -->
-    <calcite.version>1.16.0</calcite.version>
+    <calcite.version>1.22.0</calcite.version>
     <flink.version>1.10.1</flink.version>
     <flink.shaded.hadoop.version>2.7.5-10.0</flink.shaded.hadoop.version>
     <hadoop.version>2.7.5</hadoop.version>
@@ -570,18 +570,6 @@
               <groupId>net.java.dev.javacc</groupId>
               <artifactId>javacc</artifactId>
               <version>7.0.2</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>com.googlecode.fmpp-maven-plugin</groupId>
-          <artifactId>fmpp-maven-plugin</artifactId>
-          <version>1.0</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.freemarker</groupId>
-              <artifactId>freemarker</artifactId>
-              <version>2.3.25-incubating</version>
             </dependency>
           </dependencies>
         </plugin>

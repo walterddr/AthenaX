@@ -18,7 +18,6 @@
 
 package com.uber.athenax.vm.connectors.kafka;
 
-import com.uber.athenax.vm.api.tables.AthenaXTableSinkProvider;
 import org.apache.flink.streaming.connectors.kafka.Kafka09JsonTableSink;
 import org.apache.flink.streaming.connectors.kafka.partitioner.FlinkKafkaPartitioner;
 import org.apache.flink.table.catalog.ExternalCatalogTable;
@@ -35,7 +34,7 @@ import static com.uber.athenax.vm.connectors.kafka.KafkaConnectorDescriptorValid
 import static com.uber.athenax.vm.connectors.kafka.KafkaConnectorDescriptorValidator.PARTITIONER_CLASS_NAME_KEY;
 import static com.uber.athenax.vm.connectors.kafka.KafkaConnectorDescriptorValidator.TOPIC_NAME_KEY;
 
-public class KafkaJsonConnector implements AthenaXTableSinkProvider {
+public class KafkaJsonConnector implements AthenaXTableSinkFactory {
   private static final String TYPE = "kafka+json";
 
   @Override

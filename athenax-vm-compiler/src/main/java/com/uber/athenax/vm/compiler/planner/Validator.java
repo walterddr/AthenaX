@@ -18,7 +18,6 @@
 
 package com.uber.athenax.vm.compiler.planner;
 
-import com.uber.athenax.vm.compiler.parser.SqlCreateFunction;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
@@ -71,26 +70,8 @@ class Validator {
     for (SqlNode n : query) {
       if (n instanceof SqlSetOption) {
         extract((SqlSetOption) n);
-      } else if (n instanceof SqlCreateFunction) {
-        extract((SqlCreateFunction) n);
       }
     }
-  }
-
-  private void extract(SqlCreateFunction node) {
-    if (node.jarList() == null) {
-      return;
-    }
-
-    for (SqlNode n : node.jarList()) {
-      URI uri = URI.create(unwrapConstant(n));
-      additionalResources.add(uri);
-    }
-
-    String funcName = node.dbName() != null ? unwrapConstant(node.dbName()) + "." + unwrapConstant(node.funcName())
-        : unwrapConstant(node.funcName());
-    String clazzName = unwrapConstant(node.className());
-    userDefinedFunctions.put(funcName, clazzName);
   }
 
   private void extract(SqlSetOption node) {
