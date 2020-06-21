@@ -20,7 +20,8 @@ package com.uber.athenax.vm.connectors.kafka;
 
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
-import kafka.utils.SystemTime$;
+import org.apache.kafka.common.network.ListenerName;
+import org.apache.kafka.common.utils.SystemTime;
 import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import scala.Option;
@@ -45,7 +46,7 @@ public final class MiniKafkaCluster implements Closeable {
     this.kafkaServer = new ArrayList<>();
     for (String id : brokerIds) {
       KafkaConfig c = new KafkaConfig(createBrokerConfig(id));
-      kafkaServer.add(new KafkaServer(c, SystemTime$.MODULE$, Option.empty()));
+      kafkaServer.add(new KafkaServer(c, SystemTime.SYSTEM, Option.empty(), null));
     }
   }
 
@@ -88,7 +89,8 @@ public final class MiniKafkaCluster implements Closeable {
   }
 
   public int getKafkaServerPort(int index) {
-    return kafkaServer.get(index).socketServer().boundPort(SecurityProtocol.PLAINTEXT);
+    return kafkaServer.get(index).socketServer().boundPort(
+        ListenerName.forSecurityProtocol(SecurityProtocol.PLAINTEXT));
   }
 
   public static class Builder {

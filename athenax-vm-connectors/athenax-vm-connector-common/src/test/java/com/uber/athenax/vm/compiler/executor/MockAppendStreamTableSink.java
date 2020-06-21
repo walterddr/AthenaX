@@ -34,6 +34,7 @@ class MockAppendStreamTableSink implements AppendStreamTableSink<Row> {
   private final RowTypeInfo type;
 
   MockAppendStreamTableSink(RowTypeInfo type) {
+    // TODO convert to use DataType
     this.type = type;
   }
 

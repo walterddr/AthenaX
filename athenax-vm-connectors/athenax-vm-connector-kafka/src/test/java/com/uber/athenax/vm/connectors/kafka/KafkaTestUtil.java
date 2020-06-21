@@ -19,9 +19,9 @@
 package com.uber.athenax.vm.connectors.kafka;
 
 import kafka.admin.AdminUtils;
-import kafka.common.TopicExistsException;
 import kafka.utils.ZkUtils;
 import org.apache.flink.util.Preconditions;
+import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.security.JaasUtils;
 
 import java.io.IOException;

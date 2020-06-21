@@ -22,7 +22,7 @@ import com.uber.athenax.backend.server.jobs.JobManager;
 import com.uber.athenax.backend.server.jobs.JobStore;
 import com.uber.athenax.backend.server.jobs.WatchdogPolicy;
 import com.uber.athenax.backend.server.yarn.InstanceManager;
-import com.uber.athenax.vm.api.tables.AthenaXTableCatalogProvider;
+import com.uber.athenax.vm.api.tables.AthenaXTableCatalogFactory;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -39,7 +39,7 @@ public final class ServerContext {
   private JobStore jobStore;
   private JobManager jobManager;
   private WatchdogPolicy watchdogPolicy;
-  private AthenaXTableCatalogProvider catalogs;
+  private AthenaXTableCatalogFactory catalogs;
   private AthenaXConfiguration conf;
 
   private ServerContext() {
@@ -49,7 +49,7 @@ public final class ServerContext {
   public void initialize(AthenaXConfiguration conf) throws ClassNotFoundException, IOException {
     this.conf = conf;
     this.jobStore = (JobStore) instantiate(Class.forName(conf.jobStoreImpl()));
-    this.catalogs = (AthenaXTableCatalogProvider) instantiate(Class.forName(conf.catalogProvider()));
+    this.catalogs = (AthenaXTableCatalogFactory) instantiate(Class.forName(conf.catalogProvider()));
     this.jobManager = new JobManager(jobStore, catalogs);
     this.instanceManager = InstanceManager.create(conf, jobManager, executor);
     this.watchdogPolicy = (WatchdogPolicy) instantiate(Class.forName(conf.watchdogPolicyImpl()));
@@ -76,7 +76,7 @@ public final class ServerContext {
     return jobManager;
   }
 
-  public AthenaXTableCatalogProvider catalogs() {
+  public AthenaXTableCatalogFactory catalogs() {
     return catalogs;
   }
 

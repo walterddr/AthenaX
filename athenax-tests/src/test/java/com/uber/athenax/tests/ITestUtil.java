@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uber.athenax.backend.server.AthenaXConfiguration;
 import com.uber.athenax.backend.server.MiniAthenaXCluster;
 import com.uber.athenax.vm.api.tables.AthenaXTableCatalog;
-import com.uber.athenax.vm.api.tables.AthenaXTableCatalogProvider;
+import com.uber.athenax.vm.api.tables.AthenaXTableCatalogFactory;
 import com.uber.athenax.vm.connectors.kafka.KafkaTestUtil;
 import com.uber.athenax.vm.connectors.kafka.MiniKafkaCluster;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
@@ -129,7 +129,7 @@ final class ITestUtil {
     }
   }
 
-  public static class CatalogProvider implements AthenaXTableCatalogProvider {
+  public static class CatalogFactory implements AthenaXTableCatalogFactory {
     @Override
     public Map<String, AthenaXTableCatalog> getInputCatalog(String cluster) {
       Preconditions.checkNotNull(brokerAddress);
@@ -148,9 +148,9 @@ final class ITestUtil {
   protected static AthenaXConfiguration generateConf(MiniAthenaXCluster cluster) throws IOException {
     StringBuffer sb = new StringBuffer();
     sb.append(String.format("catalog.impl: %s.%s$%s\n",
-        CatalogProvider.class.getPackage().getName(),
+        CatalogFactory.class.getPackage().getName(),
         ITestUtil.class.getSimpleName(),
-        CatalogProvider.class.getSimpleName()))
+        CatalogFactory.class.getSimpleName()))
         .append("athenax.master.uri: http://localhost:0\n")
         .append(cluster.generateYarnClusterConfContent("foo"))
         .append("extras:\n")

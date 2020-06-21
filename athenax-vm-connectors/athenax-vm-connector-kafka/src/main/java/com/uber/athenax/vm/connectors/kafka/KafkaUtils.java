@@ -42,7 +42,7 @@ final class KafkaUtils {
   }
 
   static RowTypeInfo toRowType(TableSchema schema) {
-    return new RowTypeInfo(schema.getTypes(), schema.getColumnNames());
+    return new RowTypeInfo(schema.getFieldTypes(), schema.getFieldNames());
   }
 
   static FlinkKafkaPartitioner<Row> instantiatePartitioner(String clazzName)

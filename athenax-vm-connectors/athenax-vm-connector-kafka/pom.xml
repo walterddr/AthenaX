@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-kafka-0.9_${scala.binary.version}</artifactId>
+      <artifactId>flink-connector-kafka-0.10_${scala.binary.version}</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
@@ -48,7 +48,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-metrics-jmx</artifactId>
+      <artifactId>flink-metrics-jmx_${scala.binary.version}</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

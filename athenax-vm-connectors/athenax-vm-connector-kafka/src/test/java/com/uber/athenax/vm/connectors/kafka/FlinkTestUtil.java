@@ -20,7 +20,9 @@ package com.uber.athenax.vm.connectors.kafka;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.minicluster.LocalFlinkMiniCluster;
+import org.apache.flink.runtime.minicluster.MiniCluster;
+import org.apache.flink.runtime.minicluster.MiniClusterConfiguration;
+import org.apache.flink.runtime.minicluster.RpcServiceSharing;
 import org.apache.flink.streaming.api.environment.LocalStreamEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
@@ -29,8 +31,8 @@ final class FlinkTestUtil {
   private FlinkTestUtil() {
   }
 
-  static LocalFlinkMiniCluster execute(LocalStreamEnvironment env,
-                                       Configuration conf, String jobName) throws Exception {
+  static MiniCluster execute(LocalStreamEnvironment env,
+                             Configuration conf, String jobName) throws Exception {
     StreamGraph streamGraph = env.getStreamGraph();
     streamGraph.setJobName(jobName);
     JobGraph jobGraph = streamGraph.getJobGraph();
@@ -38,10 +40,13 @@ final class FlinkTestUtil {
     configuration.addAll(jobGraph.getJobConfiguration());
     configuration.setLong("taskmanager.memory.size", -1L);
     configuration.setInteger("taskmanager.numberOfTaskSlots", jobGraph.getMaximumParallelism());
+    MiniClusterConfiguration miniClusterConfiguration = new MiniClusterConfiguration(
+        configuration, 1, RpcServiceSharing.SHARED, "localhost:8888"
+    );
 
-    LocalFlinkMiniCluster cluster = new LocalFlinkMiniCluster(configuration, true);
+    MiniCluster cluster = new MiniCluster(miniClusterConfiguration);
     cluster.start();
-    cluster.submitJobDetached(jobGraph);
+    cluster.submitJob(jobGraph);
     return cluster;
   }
 }

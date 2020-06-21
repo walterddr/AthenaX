@@ -18,18 +18,18 @@
 
 package com.uber.athenax.vm.compiler.executor;
 
+import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.catalog.CatalogTable;
 import org.apache.flink.table.descriptors.ConnectorDescriptorValidator;
 import org.apache.flink.table.descriptors.DescriptorProperties;
-import org.apache.flink.table.factories.TableSourceFactory;
-import org.apache.flink.table.sources.TableSource;
+import org.apache.flink.table.factories.TableSinkFactory;
+import org.apache.flink.table.sinks.AppendStreamTableSink;
+import org.apache.flink.table.sinks.TableSink;
 import org.apache.flink.types.Row;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +39,16 @@ import static com.uber.athenax.vm.compiler.executor.MockExternalCatalogTable.CON
 import static com.uber.athenax.vm.compiler.executor.MockExternalCatalogTable.TABLE_DATA_CONNECTOR_PROPERTY;
 import static com.uber.athenax.vm.compiler.executor.MockExternalCatalogTable.TABLE_SCHEMA_CONNECTOR_PROPERTY;
 
-public class MockTableSourceFactory implements TableSourceFactory<Row> {
+public class MockTableSinkFactory implements TableSinkFactory<Row> {
+
+  @Override
+  public TableSink<Row> createTableSink(Map<String, String> properties) {
+    DescriptorProperties params = new DescriptorProperties(true);
+    params.putProperties(properties);
+    TableSchema tableSchema = params.getTableSchema(MockExternalCatalogTable.TABLE_SCHEMA_CONNECTOR_PROPERTY);
+    RowTypeInfo type = new RowTypeInfo(tableSchema.getFieldTypes(), tableSchema.getFieldNames());
+    return new MockAppendStreamTableSink(type);
+  }
 
   @Override
   public Map<String, String> requiredContext() {
@@ -57,25 +66,5 @@ public class MockTableSourceFactory implements TableSourceFactory<Row> {
     properties.add(TABLE_SCHEMA_CONNECTOR_PROPERTY + ".#." + "name");
     properties.add(TABLE_SCHEMA_CONNECTOR_PROPERTY + ".#." + "type");
     return properties;
-  }
-
-  @Override
-  public TableSource<Row> createTableSource(Map<String, String> properties) {
-    DescriptorProperties params = new DescriptorProperties(true);
-    params.putProperties(properties);
-    TableSchema schema = params.getTableSchema(TABLE_SCHEMA_CONNECTOR_PROPERTY);
-    List<Row> rows = deserializeRows(params.getString(TABLE_DATA_CONNECTOR_PROPERTY));
-    return new MockTableSource(rows, schema);
-  }
-
-  private List<Row> deserializeRows(String encoded) {
-    ByteArrayInputStream bis = new ByteArrayInputStream(Base64.getDecoder().decode(encoded));
-    try (ObjectInputStream is = new ObjectInputStream(bis)) {
-      @SuppressWarnings("unchecked")
-      List<Row> res = (List<Row>) is.readObject();
-      return res;
-    } catch (ClassNotFoundException | IOException e) {
-      return null;
-    }
   }
 }
